@@ -8,8 +8,11 @@ import (
 
 func main() {
 
+	sh := newStatistics()
+
 	r := mux.NewRouter()
-	r.HandleFunc("/fizzbuzz", handleFizzBuzz)
+	r.HandleFunc("/fizzbuzz", sh.handleFizzBuzz)
+	r.HandleFunc("/statistics", sh.handleStatistics)
 
 	log.Fatalln(http.ListenAndServe(":8080", r))
 }

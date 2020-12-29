@@ -7,10 +7,11 @@ import (
 )
 
 var (
-	_ http.HandlerFunc = handleFizzBuzz
+	_ http.HandlerFunc = (&statisticsHandler{}).handleFizzBuzz
+	_ http.HandlerFunc = (&statisticsHandler{}).handleStatistics
 )
 
-func handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
+func (sh *statisticsHandler) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
@@ -36,12 +37,30 @@ func handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		sh.newCall(transformQuery(int(d1), int(d2), int(limit), s1, s2))
 		_, err = w.Write([]byte(fizzBuzz(int(d1), int(d2), int(limit), s1, s2)))
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
 		}
 
+	default:
+		http.Error(w, fmt.Sprintf("unsupported method: %s", http.MethodPost), http.StatusMethodNotAllowed)
+		return
+	}
+}
+
+func (sh *statisticsHandler) handleStatistics(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+
+		d1, d2, limit, s1, s2 := getQuery(sh.most())
+
+		_, err := w.Write([]byte(fmt.Sprintf("int1=%d ; int2=%d ; limit=%d ; s1 = %s ; s2 = %s", d1, d2, limit, s1, s2)))
+		if err != nil {
+			http.Error(w, "internal server error", http.StatusInternalServerError)
+			return
+		}
 	default:
 		http.Error(w, fmt.Sprintf("unsupported method: %s", http.MethodPost), http.StatusMethodNotAllowed)
 		return
