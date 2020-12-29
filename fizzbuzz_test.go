@@ -64,9 +64,58 @@ func TestFizzBuzz(t *testing.T) {
 	}
 }
 
-func BenchmarkFizzBuzz(b *testing.B) {
+func BenchmarkFizzBuzz3_5_500_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
 		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz3_50_500_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz3_5_5000_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz3_50_5000_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz30_5_5000_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz3_5_50000_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz300_500_50000_4_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizz", "buzz")
+	}
+}
+
+func BenchmarkFizzBuzz3_500_50000_40_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 500, "fizzfizzfizzfizzfizzfizzfizzfizz", "buzz")
 	}
 }
