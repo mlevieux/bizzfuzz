@@ -36,8 +36,8 @@ func (s *statisticsHandler) most() string {
 }
 
 
-func transformQuery(d1, d2, limit int, s1, s2 string) string {
-	return fmt.Sprintf("%d|%d|%d|%s|%s", d1, d2, limit, s1, s2)
+func transformQuery(d1, d2, limit int, str1, str2 string) string {
+	return fmt.Sprintf("%d|%d|%d|%s|%s", d1, d2, limit, str1, str2)
 }
 
 func getQuery(params string) (int, int, int, string, string) {
@@ -56,7 +56,7 @@ func getQuery(params string) (int, int, int, string, string) {
 	params = params[i+1:]
 
 	i = strings.IndexByte(params, '|')
-	s1, s2 := params[:i], params[i+1:]
+	str1, str2 := params[:i], params[i+1:]
 
-	return d1, d2, limit, s1, s2
+	return d1, d2, limit, str1, str2
 }
