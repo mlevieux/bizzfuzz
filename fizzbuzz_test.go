@@ -1,6 +1,72 @@
 package main
 
-import "testing"
+import (
+	"fmt"
+	"strconv"
+	"strings"
+	"testing"
+)
+
+func trivialFizzBuzz(d1, d2, limit int, s1, s2 string) string {
+	result := ""
+	for i := 1 ; i <= limit ; i++ {
+		if i % d1 == 0 && i % d2 == 0 {
+			result += s1 + s2
+		} else if i % d1 == 0 {
+			result += s1
+		} else if i % d2 == 0 {
+			result += s2
+		} else {
+			result += strconv.Itoa(i)
+		}
+
+		result += ","
+	}
+	result = strings.Trim(result, ",")
+	return result
+}
+
+func testMakeFizzBuzzBuffer(d1, d2, limit int, s1, s2 string) bool {
+	buf := makeFizzBuzzBuffer(d1, d2, limit, s1, s2)
+	tfb := trivialFizzBuzz(d1, d2, limit, s1, s2)
+	if len(buf) != len(tfb) {
+		fmt.Println(len(buf), "against", len(tfb), tfb)
+		return false
+	}
+	return true
+}
+
+func TestMakeFizzBuzzBuffer(t *testing.T) {
+	sets := []fizzBuzzTestSet{
+		{
+			d1: 3,
+			d2: 5,
+			limit: 15,
+			str1: "fizz",
+			str2: "buzz",
+		},
+		{
+			d1: 2,
+			d2: 7,
+			limit: 30,
+			str1: "fizza",
+			str2: "buzzar",
+		},
+		{
+			d1: 1,
+			d2: 5,
+			limit: 40,
+			str1: "fiazz",
+			str2: "buzz",
+		},
+	}
+
+	for _, set := range sets {
+		if !testMakeFizzBuzzBuffer(set.d1, set.d2, set.limit, set.str1, set.str2) {
+			t.Fail()
+		}
+	}
+}
 
 type fizzBuzzTestSet struct {
 	d1, d2 int
@@ -74,48 +140,48 @@ func BenchmarkFizzBuzz3_5_500_4_4(b *testing.B) {
 func BenchmarkFizzBuzz3_50_500_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(3, 50, 500, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz3_5_5000_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(3, 5, 5000, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz3_50_5000_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(3, 50, 5000, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz30_5_5000_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(30, 5, 5000, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz3_5_50000_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(3, 5, 50000, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz300_500_50000_4_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizz", "buzz")
+		fizzBuzz(300, 500, 50000, "fizz", "buzz")
 	}
 }
 
 func BenchmarkFizzBuzz3_500_50000_40_4(b *testing.B) {
 
 	for i := 0 ; i < b.N ; i++ {
-		fizzBuzz(3, 5, 500, "fizzfizzfizzfizzfizzfizzfizzfizz", "buzz")
+		fizzBuzz(3, 500, 50000, "fizzfizzfizzfizzfizzfizzfizzfizz", "buzz")
 	}
 }

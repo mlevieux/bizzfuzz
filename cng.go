@@ -14,26 +14,56 @@ var (
 		'9',
 	}
 
-	length = 1
-	num = func () [11]byte { b := [11]byte{} ; for i := 0 ; i < 10 ; i++ {b[i] = 48} ; b[10] = 49 ; return b }()
+	num = [11]byte{
+		48,
+		48,
+		48,
+		48,
+		48,
+		48,
+		48,
+		48,
+		48,
+		48,
+		49,
+	}
 )
 
-func reset() {
-	length = 1
+type gen struct {
+	num []byte
+	length int
 }
 
-func  inc() {
-	for j := 10 ; j > 10 - length ; j-- {
-		if num[j] == 57 {
-			num[j] = 48
+func newGen() gen {
+	g := gen{
+		num:    make([]byte, 11),
+		length: 1,
+	}
+	copy(g.num, num[:])
+
+	return g
+}
+
+func (g *gen) reset() {
+	g.length = 1
+	copy(g.num, num[:])
+}
+
+func (g *gen) inc() {
+	j := 10
+	for ; j >= 11 - g.length ; j-- {
+		if g.num[j] == 57 {
+			g.num[j] = 48
 		} else {
-			num[j]++
+			g.num[j]++
 			return
 		}
 	}
-	length++
+	g.length++
+	g.num[j]++
 }
 
-func  next() string {
-	return string(num[11-length:])
+func (g gen) fillNext(buf []byte) int {
+	copy(buf, g.num[11-g.length:])
+	return g.length
 }
