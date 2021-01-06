@@ -180,3 +180,10 @@ func BenchmarkFizzBuzz3_500_50000_40_4(b *testing.B) {
 		fizzBuzz(3, 500, 50000, "fizzfizzfizzfizzfizzfizzfizzfizz", "buzz")
 	}
 }
+
+func BenchmarkFizzBuzz3_5_50000000_40_4(b *testing.B) {
+
+	for i := 0 ; i < b.N ; i++ {
+		fizzBuzz(3, 5, 50_000_000, "fizz", "buzz")
+	}
+}

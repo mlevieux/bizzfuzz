@@ -38,7 +38,7 @@ func (sh *statisticsHandler) handleFizzBuzz(w http.ResponseWriter, r *http.Reque
 		}
 
 		sh.newCall(transformQuery(int(d1), int(d2), int(limit), str1, str2))
-		_, err = w.Write([]byte(fizzBuzz(int(d1), int(d2), int(limit), str1, str2)))
+		_, err = w.Write(fizzBuzz(int(d1), int(d2), int(limit), str1, str2))
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
