@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 func trivialFizzBuzz(d1, d2, limit int, s1, s2 string) string {
@@ -27,38 +29,31 @@ func trivialFizzBuzz(d1, d2, limit int, s1, s2 string) string {
 }
 
 func testMakeFizzBuzzBuffer(d1, d2, limit int, s1, s2 string) bool {
-	buf := makeFizzBuzzBuffer(d1, d2, limit, s1, s2)
+	bufLen := makeFizzBuzzBufferLen(d1, d2, limit, s1, s2)
 	tfb := trivialFizzBuzz(d1, d2, limit, s1, s2)
-	if len(buf) != len(tfb) {
-		fmt.Println(len(buf), "against", len(tfb), tfb)
+	if bufLen < len(tfb) - 10 || bufLen > len(tfb) + 10 {
+		fmt.Println(d1, d2, limit, s1, s2, "should produce", len(tfb), "but produced", bufLen)
 		return false
 	}
 	return true
 }
 
+func randStr(rg *rand.Rand, min, max int) string {
+	l := rg.Intn(max-min)+min
+	return strings.Repeat("a", l)
+}
+
 func TestMakeFizzBuzzBuffer(t *testing.T) {
-	sets := []fizzBuzzTestSet{
-		{
-			d1: 3,
-			d2: 5,
-			limit: 15,
-			str1: "fizz",
-			str2: "buzz",
-		},
-		{
-			d1: 2,
-			d2: 7,
-			limit: 30,
-			str1: "fizza",
-			str2: "buzzar",
-		},
-		{
-			d1: 1,
-			d2: 5,
-			limit: 40,
-			str1: "fiazz",
-			str2: "buzz",
-		},
+	sets := make([]fizzBuzzTestSet, 0)
+	rg := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := 0 ; i < 10 ; i++ {
+		sets = append(sets, fizzBuzzTestSet{
+			d1:     rg.Intn(500) + 10,
+			d2:     rg.Intn(500) + 10,
+			limit:  rg.Intn(15000) + 10,
+			str1:   randStr(rg, 1, 10),
+			str2:   randStr(rg, 1, 10),
+		})
 	}
 
 	for _, set := range sets {
@@ -123,7 +118,7 @@ func TestFizzBuzz(t *testing.T) {
 
 	for _, set := range sets {
 		fizzBuzzResult := fizzBuzz(set.d1, set.d2, set.limit, set.str1, set.str2)
-		if fizzBuzzResult != set.result {
+		if string(fizzBuzzResult) != set.result {
 			t.Logf("With values (d1: %d, d2: %d, limit: %d, str1: %s, str2: %s)\n\tresult should be:\n%s\n\tbut is:\n%s\n", set.d1, set.d2, set.limit, set.str1, set.str2, set.result, fizzBuzzResult)
 			t.Fail()
 		}

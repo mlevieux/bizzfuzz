@@ -23,10 +23,7 @@ package main
 // numberOfDigits returns the number of digits needed to store a sequence
 //  123...(n-1)n where n is an arbitrary integer
 func numberOfDigits(n int) int {
-	p := 1
-	c := 0
-	for ; p*10 <= n; p, c = p*10, c+1 {
-	}
+	p, c := minimalPowerOf10(n)
 
 	d := 0
 	for n > 0 {
@@ -38,6 +35,14 @@ func numberOfDigits(n int) int {
 	}
 
 	return d
+}
+
+func minimalPowerOf10(n int) (int, int) {
+	p := 1
+	c := 0
+	for ; p*10 <= n; p, c = p*10, c+1 {
+	}
+	return p, c
 }
 
 func gcd(a, b int) int {
