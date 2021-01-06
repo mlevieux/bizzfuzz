@@ -28,8 +28,8 @@ func trivialFizzBuzz(d1, d2, limit int, s1, s2 string) string {
 	return result
 }
 
-func testMakeFizzBuzzBuffer(d1, d2, limit int, s1, s2 string) bool {
-	bufLen := makeFizzBuzzBufferLen(d1, d2, limit, s1, s2)
+func testApproximateFizzBuzzBufferLen(d1, d2, limit int, s1, s2 string) bool {
+	bufLen := approximateFizzBuzzBufferLen(d1, d2, limit, s1, s2)
 	tfb := trivialFizzBuzz(d1, d2, limit, s1, s2)
 	if bufLen < len(tfb) - 10 || bufLen > len(tfb) + 10 {
 		fmt.Println(d1, d2, limit, s1, s2, "should produce", len(tfb), "but produced", bufLen)
@@ -43,7 +43,7 @@ func randStr(rg *rand.Rand, min, max int) string {
 	return strings.Repeat("a", l)
 }
 
-func TestMakeFizzBuzzBuffer(t *testing.T) {
+func TestApproximateFizzBuzzBufferLen(t *testing.T) {
 	sets := make([]fizzBuzzTestSet, 0)
 	rg := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := 0 ; i < 10 ; i++ {
@@ -57,7 +57,7 @@ func TestMakeFizzBuzzBuffer(t *testing.T) {
 	}
 
 	for _, set := range sets {
-		if !testMakeFizzBuzzBuffer(set.d1, set.d2, set.limit, set.str1, set.str2) {
+		if !testApproximateFizzBuzzBufferLen(set.d1, set.d2, set.limit, set.str1, set.str2) {
 			t.Fail()
 		}
 	}

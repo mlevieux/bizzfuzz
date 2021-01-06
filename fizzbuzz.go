@@ -13,7 +13,7 @@ var (
 	}
 )
 
-func makeFizzBuzzBufferLen(d1, d2, limit int, str1, str2 string) int {
+func approximateFizzBuzzBufferLen(d1, d2, limit int, str1, str2 string) int {
 	lenS1, lenS2 := len(str1), len(str2)
 	lenLcm := lenS1 + lenS2
 	lcm := lcm(d1, d2)
@@ -39,7 +39,7 @@ func makeFizzBuzzBufferLen(d1, d2, limit int, str1, str2 string) int {
 
 func fizzBuzz(d1, d2 int, limit int, str1, str2 string) []byte {
 
-	buf := make([]byte, makeFizzBuzzBufferLen(d1, d2, limit, str1, str2) + 100)
+	buf := make([]byte, approximateFizzBuzzBufferLen(d1, d2, limit, str1, str2) + 100)
 	n := 0
 	len1, len2, len3 := len(str1), len(str2), len(str1) + len(str2)
 	g := newGen()
