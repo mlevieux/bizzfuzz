@@ -35,8 +35,10 @@ The server has two endpoints:
 
 which takes 5 parameters: int1, int2, limit, str1, and str2, such that it returns the fizzbuzz sequence corresponding to the
 given parameters, as specified in the project specification.
+It only accepts GET requests.
 
 /statistics
 
 which can take a 'top' parameter. If top is not given, it will be automatically assigned the value 1.
 This endpoint returns the most 'top' called parameter sets on /fizzbuzz endpoint, along with the number of times they've been called.
+It only accepts GET requests.
