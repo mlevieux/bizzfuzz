@@ -22,7 +22,7 @@ var (
 // fizzbuzz exercise, all numbers are at least ranged over, even
 // if a certain number of them are not "generated", as in output.
 // It is designed to outperform strconv.Itoa in this specific
-// contiguous number generation task.
+// contiguous number generation task (see benchmarks in cng_test.go).
 type gen struct {
 	num []byte
 	length int
