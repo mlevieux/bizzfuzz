@@ -12,6 +12,11 @@ var (
 	_ http.HandlerFunc = (&statsCalls{}).handleStatistics
 )
 
+// handleFizzBuzz handles calls on fizzbuzz endpoint.
+// It takes 5 parameters, namely int1, int2, limit, str1, and str2
+// int1, int2 and limit should be integers that fit in an int32
+// It responds with the fizzbuzz sequence using int1 and int2 as divisors,
+// limit as upper bound, and str1 and str2 as replacers.
 func (a statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
@@ -42,6 +47,10 @@ func (a statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
+		if int32Overflow(w, d1, "int1") || int32Overflow(w, d2, "int2") || int32Overflow(w, limit, "limit") {
+			return
+		}
+
 		p := transformQuery(int(d1), int(d2), int(limit), str1, str2)
 		a[p]++
 
@@ -57,6 +66,20 @@ func (a statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func int32Overflow(w http.ResponseWriter, i int64, intName string) bool {
+	if int64(int32(i)) != i {
+		http.Error(w, fmt.Sprintf("Overflow value ( > math.MaxInt32) for '%s': %d", intName, i), http.StatusBadRequest)
+		return true
+	}
+	return false
+}
+
+// handleStatistics handles calls on statistics endpoint
+// It responds with a pretty formatted representation of the most used parameters
+// for calls to fizzbuzz endpoints.
+// Additionally, it is possible to add a "top" parameter, representing an integer,
+// so that the response will contain the representation of the 'top' most used sets
+// of parameters in calls to fizzbuzz endpoints.
 func (a statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
