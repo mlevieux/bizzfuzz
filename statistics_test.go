@@ -30,15 +30,63 @@ func TestStatisticsHandler_Most(t *testing.T) {
 	}
 
 	for _, set := range sets {
-		sh := newStatistics()
+		sh := make(statsCalls)
 		for _, call := range set.calls {
-			sh.newCall(call)
+			sh[call]++
 		}
 
 		most := sh.most()
 		if most != set.most {
 			t.Logf("most should be '%s' but is '%s'\n", set.most, most)
 			t.Fail()
+		}
+	}
+}
+
+type nMostTestSet struct {
+	calls []string
+	most []string
+	n int
+}
+
+func TestStatisticsHandler_NMost(t *testing.T) {
+
+	sets := []nMostTestSet{
+		{
+			calls: []string{
+				"1",
+				"1",
+				"1",
+				"1",
+				"1",
+				"2",
+				"2",
+				"2",
+				"2",
+				"2",
+				"2",
+				"3",
+			},
+			most: []string{
+				"2",
+				"1",
+			},
+			n: 2,
+		},
+	}
+
+	for _, set := range sets {
+		sh := make(statsCalls)
+		for _, call := range set.calls {
+			sh[call]++
+		}
+
+		most := sh.nMost(set.n)
+		for i, smost := range most {
+			if smost != set.most[i] {
+				t.Logf("most should be '%s' but is '%s'\n", set.most, most)
+				t.Fail()
+			}
 		}
 	}
 }

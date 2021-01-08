@@ -8,7 +8,8 @@ import (
 
 func main() {
 
-	sh := newStatistics()
+	
+	sh := make(statsCalls)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/fizzbuzz", sh.handleFizzBuzz)

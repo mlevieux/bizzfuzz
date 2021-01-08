@@ -2,39 +2,57 @@ package main
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-type statisticsHandler struct {
-	calls map[string]int
-}
+type statsCalls map[string]int
 
-func newStatistics() *statisticsHandler {
-	return &statisticsHandler{calls: make(map[string]int)}
-}
-
-func (s *statisticsHandler) newCall(params string) {
-	s.calls[params]++
-}
-
-func (s *statisticsHandler) most() string {
+func (s statsCalls) most() string {
 
 	var (
-		bestParams string
-		bestNbCalls int
+		mostParams string
+		mostNbCalls int
 	)
 
-	for params, nbCalls := range s.calls {
-		if nbCalls > bestNbCalls {
-			bestParams = params
-			bestNbCalls = nbCalls
+	for params, nbCalls := range s {
+		if nbCalls > mostNbCalls {
+			mostParams = params
+			mostNbCalls = nbCalls
 		}
 	}
 
-	return bestParams
+	return mostParams
 }
 
+func (s statsCalls) nMost(n int) []string {
+
+	type callInfo struct {
+		params string
+		nbCalls int
+	}
+
+	toSort := make([]callInfo, len(s))
+	i := 0
+	for params, nbCalls := range s {
+		toSort[i] = callInfo{
+			params:  params,
+			nbCalls: nbCalls,
+		}
+		i++
+	}
+
+	sort.Slice(toSort, func(i, j int) bool {
+		return toSort[i].nbCalls > toSort[j].nbCalls
+	})
+
+	result := make([]string, n)
+	for i := 0 ; i < n && i < len(toSort); i++ {
+		result[i] = toSort[i].params
+	}
+	return result
+}
 
 func transformQuery(d1, d2, limit int, str1, str2 string) string {
 	return fmt.Sprintf("%d|%d|%d|%s|%s", d1, d2, limit, str1, str2)

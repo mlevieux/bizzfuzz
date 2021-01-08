@@ -4,15 +4,6 @@ import (
 	"math"
 )
 
-var (
-	numSpace = map[int]int{
-		10:    9,
-		100:   180,
-		1000:  2700,
-		10000: 36000,
-	}
-)
-
 func approximateFizzBuzzBufferLen(d1, d2, limit int, str1, str2 string) int {
 	lenS1, lenS2 := len(str1), len(str2)
 	lenLcm := lenS1 + lenS2
