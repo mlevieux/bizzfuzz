@@ -17,7 +17,7 @@ var (
 // int1, int2 and limit should be integers that fit in an int32
 // It responds with the fizzbuzz sequence using int1 and int2 as divisors,
 // limit as upper bound, and str1 and str2 as replacers.
-func (a statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
+func (stats statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodGet:
@@ -52,7 +52,7 @@ func (a statsCalls) handleFizzBuzz(w http.ResponseWriter, r *http.Request) {
 		}
 
 		p := transformQuery(int(d1), int(d2), int(limit), str1, str2)
-		a[p]++
+		stats.add(p)
 
 		_, err = w.Write(fizzBuzz(int(d1), int(d2), int(limit), str1, str2))
 		if err != nil {
@@ -80,7 +80,7 @@ func int32Overflow(w http.ResponseWriter, i int64, intName string) bool {
 // Additionally, it is possible to add a "top" parameter, representing an integer,
 // so that the response will contain the representation of the 'top' most used sets
 // of parameters in calls to fizzbuzz endpoints.
-func (a statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request) {
+func (stats statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 
@@ -92,7 +92,7 @@ func (a statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request) {
 				return
 			}
 
-			mostN := a.nMost(int(nb))
+			mostN := stats.nMost(int(nb))
 			buf := new(bytes.Buffer)
 			for _, most := range mostN {
 				d1, d2, limit, str1, str2 := getQuery(most)
@@ -112,7 +112,7 @@ func (a statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		d1, d2, limit, str1, str2 := getQuery(a.most())
+		d1, d2, limit, str1, str2 := getQuery(stats.most())
 
 		_, err := w.Write(formatRequestFromParams(d1, d2, limit, str1, str2))
 		if err != nil {

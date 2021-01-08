@@ -5,21 +5,34 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // statsCalls wraps data and behaviours needed to process
 // mostly used parameters in calls to fizzbuzz endpoint
-type statsCalls map[string]int
+type statsCalls struct {
+	mux  *sync.Mutex
+	info map[string]int
+}
+
+func (stats statsCalls) add(params string) {
+	stats.mux.Lock()
+	defer stats.mux.Unlock()
+
+	stats.info[params]++
+}
 
 // most return the most used parameters it has been presented
-func (s statsCalls) most() string {
+func (stats statsCalls) most() string {
 
 	var (
 		mostParams string
 		mostNbCalls int
 	)
 
-	for params, nbCalls := range s {
+	stats.mux.Lock()
+	defer stats.mux.Unlock()
+	for params, nbCalls := range stats.info {
 		if nbCalls > mostNbCalls {
 			mostParams = params
 			mostNbCalls = nbCalls
@@ -32,22 +45,25 @@ func (s statsCalls) most() string {
 // nMost returns the n most used strings it has been presented
 // which is to say the n most used sets of parameters used in calls to
 // fizzbuzz endpoint
-func (s statsCalls) nMost(n int) []string {
+func (stats statsCalls) nMost(n int) []string {
 
 	type callInfo struct {
 		params string
 		nbCalls int
 	}
 
-	toSort := make([]callInfo, len(s))
+	toSort := make([]callInfo, len(stats.info))
 	i := 0
-	for params, nbCalls := range s {
+
+	stats.mux.Lock()
+	for params, nbCalls := range stats.info {
 		toSort[i] = callInfo{
 			params:  params,
 			nbCalls: nbCalls,
 		}
 		i++
 	}
+	stats.mux.Unlock()
 
 	sort.Slice(toSort, func(i, j int) bool {
 		return toSort[i].nbCalls > toSort[j].nbCalls

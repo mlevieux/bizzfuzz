@@ -1,6 +1,9 @@
 package main
 
-import "testing"
+import (
+	"sync"
+	"testing"
+)
 
 type mostTestSet struct {
 	calls []string
@@ -30,9 +33,11 @@ func TestStatisticsHandler_Most(t *testing.T) {
 	}
 
 	for _, set := range sets {
-		sh := make(statsCalls)
+		sh := statsCalls{}
+		sh.info = make(map[string]int)
+		sh.mux = new(sync.Mutex)
 		for _, call := range set.calls {
-			sh[call]++
+			sh.add(call)
 		}
 
 		most := sh.most()
@@ -76,9 +81,11 @@ func TestStatisticsHandler_NMost(t *testing.T) {
 	}
 
 	for _, set := range sets {
-		sh := make(statsCalls)
+		sh := statsCalls{}
+		sh.info = make(map[string]int)
+		sh.mux = new(sync.Mutex)
 		for _, call := range set.calls {
-			sh[call]++
+			sh.add(call)
 		}
 
 		most := sh.nMost(set.n)

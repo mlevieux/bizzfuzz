@@ -4,12 +4,15 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+	"sync"
 )
 
 func main() {
 
-	
-	sh := make(statsCalls)
+
+	sh := statsCalls{}
+	sh.info = make(map[string]int)
+	sh.mux = new(sync.Mutex)
 
 	r := mux.NewRouter()
 	r.HandleFunc("/fizzbuzz", sh.handleFizzBuzz)
