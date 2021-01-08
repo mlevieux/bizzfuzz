@@ -37,6 +37,10 @@ func numberOfDigits(n int) int {
 	return d
 }
 
+// minimalPowerOf10 returns the minimum power of 10 p
+// such that p < n < p*10
+// It returns p, as well as the number of characters needed to
+// write p
 func minimalPowerOf10(n int) (int, int) {
 	p := 1
 	c := 0
