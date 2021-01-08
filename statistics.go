@@ -23,7 +23,7 @@ func (stats statsCalls) add(params string) {
 }
 
 // most return the most used parameters it has been presented
-func (stats statsCalls) most() string {
+func (stats statsCalls) most() (string, int) {
 
 	var (
 		mostParams string
@@ -39,13 +39,13 @@ func (stats statsCalls) most() string {
 		}
 	}
 
-	return mostParams
+	return mostParams, mostNbCalls
 }
 
 // nMost returns the n most used strings it has been presented
 // which is to say the n most used sets of parameters used in calls to
 // fizzbuzz endpoint
-func (stats statsCalls) nMost(n int) []string {
+func (stats statsCalls) nMost(n int) ([]string, []int) {
 
 	type callInfo struct {
 		params string
@@ -69,11 +69,13 @@ func (stats statsCalls) nMost(n int) []string {
 		return toSort[i].nbCalls > toSort[j].nbCalls
 	})
 
-	result := make([]string, n)
+	resultStrings := make([]string, n)
+	resultNumbers := make([]int, n)
 	for i := 0 ; i < n && i < len(toSort); i++ {
-		result[i] = toSort[i].params
+		resultStrings[i] = toSort[i].params
+		resultNumbers[i] = toSort[i].nbCalls
 	}
-	return result
+	return resultStrings, resultNumbers
 }
 
 // transformQuery takes a set of parameters representing a call to

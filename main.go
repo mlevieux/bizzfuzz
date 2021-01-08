@@ -1,14 +1,20 @@
 package main
 
 import (
+	"flag"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"sync"
 )
 
+var (
+	flagListenAddr = flag.String("a", ":8080", "specifies what address to listen to to the server")
+)
+
 func main() {
 
+	flag.Parse()
 
 	sh := statsCalls{}
 	sh.info = make(map[string]int)
@@ -18,5 +24,5 @@ func main() {
 	r.HandleFunc("/fizzbuzz", sh.handleFizzBuzz)
 	r.HandleFunc("/statistics", sh.handleStatistics)
 
-	log.Fatalln(http.ListenAndServe(":8080", r))
+	log.Fatalln(http.ListenAndServe(*flagListenAddr, r))
 }

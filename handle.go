@@ -84,19 +84,27 @@ func (stats statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request)
 	switch r.Method {
 	case http.MethodGet:
 
+		if len(stats.info) == 0 {
+			_, err := w.Write([]byte("No call performed on the server yet"))
+			if err != nil {
+				http.Error(w, "internal server error", http.StatusInternalServerError)
+			}
+			return
+		}
+
 		values := r.URL.Query()
-		if nbString := values.Get("top") ; nbString != "" {
+		if nbString := values.Get("top"); nbString != "" {
 			nb, err := strconv.ParseInt(nbString, 10, 64)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("malformatted 'top' value: '%s'", nbString), http.StatusBadRequest)
 				return
 			}
 
-			mostN := stats.nMost(int(nb))
+			mostNStrings, mostNNumbers := stats.nMost(int(nb))
 			buf := new(bytes.Buffer)
-			for _, most := range mostN {
+			for i, most := range mostNStrings {
 				d1, d2, limit, str1, str2 := getQuery(most)
-				_, err := buf.Write(formatRequestFromParams(d1, d2, limit, str1, str2))
+				_, err := buf.Write(formatRequestFromParams(d1, d2, limit, str1, str2, mostNNumbers[i]))
 				if err != nil {
 					http.Error(w, "internal server error", http.StatusInternalServerError)
 					return
@@ -112,9 +120,10 @@ func (stats statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request)
 			return
 		}
 
-		d1, d2, limit, str1, str2 := getQuery(stats.most())
+		most, calls := stats.most()
+		d1, d2, limit, str1, str2 := getQuery(most)
 
-		_, err := w.Write(formatRequestFromParams(d1, d2, limit, str1, str2))
+		_, err := w.Write(formatRequestFromParams(d1, d2, limit, str1, str2, calls))
 		if err != nil {
 			http.Error(w, "internal server error", http.StatusInternalServerError)
 			return
@@ -125,6 +134,6 @@ func (stats statsCalls) handleStatistics(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func formatRequestFromParams(d1 int, d2 int, limit int, str1 string, str2 string) []byte {
-	return []byte(fmt.Sprintf("int1=%d ; int2=%d ; limit=%d ; str1 = %s ; str2 = %s", d1, d2, limit, str1, str2))
+func formatRequestFromParams(d1 int, d2 int, limit int, str1 string, str2 string, nbCalls int) []byte {
+	return []byte(fmt.Sprintf("int1=%d ; int2=%d ; limit=%d ; str1 = %s ; str2 = %s -- called %d times", d1, d2, limit, str1, str2, nbCalls))
 }
