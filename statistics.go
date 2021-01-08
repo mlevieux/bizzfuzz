@@ -7,8 +7,11 @@ import (
 	"strings"
 )
 
+// statsCalls wraps data and behaviours needed to process
+// mostly used parameters in calls to fizzbuzz endpoint
 type statsCalls map[string]int
 
+// most return the most used parameters it has been presented
 func (s statsCalls) most() string {
 
 	var (
@@ -26,6 +29,9 @@ func (s statsCalls) most() string {
 	return mostParams
 }
 
+// nMost returns the n most used strings it has been presented
+// which is to say the n most used sets of parameters used in calls to
+// fizzbuzz endpoint
 func (s statsCalls) nMost(n int) []string {
 
 	type callInfo struct {
@@ -54,10 +60,16 @@ func (s statsCalls) nMost(n int) []string {
 	return result
 }
 
+// transformQuery takes a set of parameters representing a call to
+// fizzbuzz endpoint and transforms it to an easily parsable string
 func transformQuery(d1, d2, limit int, str1, str2 string) string {
 	return fmt.Sprintf("%d|%d|%d|%s|%s", d1, d2, limit, str1, str2)
 }
 
+// getQuery takes a 'transformQuery'-formatted string and returns
+// the original set of parameters it represent.
+// Both functions work as a dependant couple to easily store call
+// parameters in a map[string]int.
 func getQuery(params string) (int, int, int, string, string) {
 	var i int
 
